@@ -10,12 +10,50 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { toast } from "sonner";
+import { registerUser } from "../api/userApi";
+import { useContext } from "react";
+import { UserDataContext } from "../contexts/UserContext";
 
 export default function SignupForm({ className, ...props }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const { setUser } = useContext(UserDataContext);
+
+  const navigate = useNavigate();
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+
+    try {
+      const userData = {
+        name,
+        email,
+        password,
+      };
+
+      registerUser(userData);
+      setUser(userData);
+
+      toast.success("User registered successfully", {
+        position: "top-center",
+      });
+      navigate("/user/home");
+    } catch (error) {
+      console.log(error);
+
+      toast.error("Error in registering user");
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <form>
+      <form onSubmit={submitHandler}>
         <FieldGroup>
           <div className="flex flex-col items-center gap-2 text-center">
             <a
@@ -33,12 +71,27 @@ export default function SignupForm({ className, ...props }) {
             </FieldDescription>
           </div>
           <Field>
+            <FieldLabel htmlFor="name">Name</FieldLabel>
+            <Input
+              id="name"
+              type="text"
+              placeholder="John Doe"
+              required
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+              value={name}
+            />
+          </Field>
+          <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
             <Input
               id="email"
               type="email"
               placeholder="m@example.com"
               required
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
             />
           </Field>
           <Field>
@@ -47,6 +100,8 @@ export default function SignupForm({ className, ...props }) {
               id="password"
               type="password"
               placeholder="********"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
               required
             />
           </Field>
@@ -55,6 +110,8 @@ export default function SignupForm({ className, ...props }) {
             <Input
               id="confirm-password"
               type="password"
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              value={confirmPassword}
               placeholder="********"
               required
             />

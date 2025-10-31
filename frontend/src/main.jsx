@@ -4,13 +4,18 @@ import "./index.css";
 import App from "./App.jsx";
 import { ThemeProvider } from "./components/theme-provider.jsx";
 import { BrowserRouter } from "react-router-dom";
+import UserContext from "./contexts/UserContext.jsx";
+import { Toaster } from "sonner";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-        <App />
-      </ThemeProvider>
+      <UserContext>
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <App />
+          <Toaster />
+        </ThemeProvider>
+      </UserContext>
     </BrowserRouter>
   </StrictMode>
 );

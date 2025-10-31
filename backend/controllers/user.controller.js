@@ -93,3 +93,7 @@ module.exports.loginUser = async (req, res) => {
       .json({ message: "Server error", error: error.message });
   }
 };
+
+module.exports.getUserProfile = (req, res) => {
+  return res.status(200).json({ message: "User profile", user: req.user });
+};
